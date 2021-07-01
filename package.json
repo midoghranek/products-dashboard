@@ -9,9 +9,19 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@emotion/react": "^11.4.0",
+    "@emotion/styled": "^11.3.0",
+    "@ghranek/hooks": "^0.1.0",
+    "@hookform/resolvers": "^2.6.0",
+    "@material-ui/core": "^4.11.4",
+    "@material-ui/icons": "^4.11.2",
+    "firebase": "9.0.0-beta.2",
     "next": "11.0.1",
     "react": "17.0.2",
-    "react-dom": "17.0.2"
+    "react-dom": "17.0.2",
+    "react-hook-form": "^7.9.0",
+    "recoil": "^0.3.1",
+    "yup": "^0.32.9"
   },
   "devDependencies": {
     "@types/react": "17.0.11",
