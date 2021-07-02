@@ -3,7 +3,11 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { loginFormSchema } from "@local/utils";
 import { auth } from "@local/utils";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import {
+  browserLocalPersistence,
+  setPersistence,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
 import { useRouter } from "next/router";
 
 type FormInputs = {
@@ -39,7 +43,8 @@ export const useLoginForm = () => {
 
   const onSubmit: SubmitHandler<FormInputs> = (data) => {
     setLoading(true);
-    signInWithEmailAndPassword(auth, data.email, data.password)
+    setPersistence(auth, browserLocalPersistence)
+      .then(() => signInWithEmailAndPassword(auth, data.email, data.password))
       .then((userCredential) => {
         const user = userCredential.user;
         if (user) {
