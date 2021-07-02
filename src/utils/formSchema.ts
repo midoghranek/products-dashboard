@@ -10,7 +10,10 @@ export const loginFormSchema = yup.object().shape({
 
 export const productFormSchema = yup.object().shape({
   name: yup.string().required("Product name is required"),
-  main_image: yup.string().required("Product image is required"),
+  main_image: yup
+    .string()
+    .url("Product image must be a valid url")
+    .required("Product image is required"),
   description: yup.string().required("Product description is required"),
   price: yup.number().required("Product price is required"),
 });
