@@ -15,6 +15,7 @@ const Appbar = () => {
         <Typography variant="h6" style={{ flexGrow: 1 }}>
           Products Dashboard
         </Typography>
+        <Typography>{auth.currentUser?.email}</Typography>
         <IconButton color="inherit" onClick={() => signOut()}>
           <ExitToApp />
         </IconButton>

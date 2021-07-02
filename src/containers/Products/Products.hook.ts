@@ -1,4 +1,4 @@
-import { productListState } from "@local/atoms";
+import { productListState } from "@local/states";
 import { ProductData } from "@local/types";
 import { db, getDataFromFirestoreCollection } from "@local/utils";
 import { doc, deleteDoc } from "firebase/firestore";

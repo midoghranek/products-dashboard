@@ -12,10 +12,9 @@ import {
 } from "@material-ui/core";
 import { Visibility, VisibilityOff } from "@material-ui/icons";
 import { Controller } from "react-hook-form";
-
+import { Space } from "@local/common";
 import {
   Container,
-  Space,
   LoginBox,
   CustomPaper,
   CenterBox,

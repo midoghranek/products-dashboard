@@ -14,3 +14,8 @@ export type FormInputs = {
   readonly main_image: string;
   readonly description: string;
 };
+
+export type EditProductModal = {
+  readonly open: boolean;
+  readonly product: ProductData | null;
+};

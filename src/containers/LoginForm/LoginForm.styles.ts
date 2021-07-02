@@ -42,12 +42,3 @@ export const CenterBox = styled.div`
   background-color: #ffffffed;
   z-index: 2;
 `;
-
-export const Space = styled.div<{
-  readonly width?: number;
-  readonly height?: number;
-}>`
-  display: flex;
-  width: ${(props) => `${props.width}px` ?? `auto`};
-  height: ${(props) => `${props.height}px` ?? `auto`};
-`;

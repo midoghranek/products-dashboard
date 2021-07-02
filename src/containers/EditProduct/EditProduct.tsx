@@ -1,5 +1,4 @@
 import {
-  auth,
   db,
   getDataFromFirestoreCollection,
   productFormSchema,
@@ -13,14 +12,15 @@ import {
   TextField,
   DialogTitle,
 } from "@material-ui/core";
-import { collection, addDoc } from "firebase/firestore";
+import { setDoc, doc } from "firebase/firestore";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { FormInputs, ProductData } from "@local/types";
+import { EditProductModal, FormInputs, ProductData } from "@local/types";
 import { useRecoilState, useSetRecoilState } from "recoil";
-import { newProductModalState, productListState } from "@local/states";
+import { editProductModalState, productListState } from "@local/states";
+import { useDidUpdate } from "@ghranek/hooks";
 
-const NewProduct = () => {
+const EditProduct: React.FC = () => {
   const setProducts = useSetRecoilState(productListState);
 
   const updateProducts = () => {
@@ -28,50 +28,73 @@ const NewProduct = () => {
       setProducts(data as ProductData[])
     );
   };
+
+  const [editProductsModal, setEditProductsModal] =
+    useRecoilState<EditProductModal>(editProductModalState);
+
   const {
     control,
     handleSubmit,
     formState: { errors },
+    setValue,
   } = useForm<FormInputs>({
     resolver: yupResolver(productFormSchema),
   });
 
-  const [addProductsModalOpen, setAddProductsModalOpen] =
-    useRecoilState<boolean>(newProductModalState);
-
-  const handleAddProductsModal = () => {
-    setAddProductsModalOpen((state) => !state);
+  const closeEditProductsModal = () => {
+    setEditProductsModal({
+      open: false,
+      product: null,
+    });
   };
 
   const onSubmit: SubmitHandler<FormInputs> = (data) => {
-    addDoc(collection(db, "products"), {
-      user: auth?.currentUser?.email,
-      ...data,
-    })
+    setDoc(
+      doc(db, "products", (editProductsModal?.product as ProductData)?.id),
+      {
+        ...editProductsModal?.product,
+        ...data,
+      }
+    )
       .then(() => updateProducts())
-      .then(() => handleAddProductsModal());
+      .then(() => closeEditProductsModal());
   };
+
+  useDidUpdate(() => {
+    if (editProductsModal?.product) {
+      setValue("id", editProductsModal?.product?.id as string);
+      setValue("name", editProductsModal?.product?.name as string);
+      setValue("price", editProductsModal?.product?.price as number);
+      setValue("main_image", editProductsModal?.product?.main_image as string);
+      setValue(
+        "description",
+        editProductsModal?.product?.description as string
+      );
+    }
+  }, [editProductsModal?.product]);
 
   return (
     <Dialog
-      open={addProductsModalOpen}
-      onClose={handleAddProductsModal}
+      open={editProductsModal.open}
+      onClose={closeEditProductsModal}
       aria-labelledby="form-dialog-title"
     >
       <form onSubmit={handleSubmit(onSubmit)}>
-        <DialogTitle id="form-dialog-title">Add New Product</DialogTitle>
+        <DialogTitle id="form-dialog-title">Edit Product</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Add product details below and click Add product button to submit
+            Edit product details below and click Edit product button to submit,
+            this product added by {editProductsModal?.product?.user} and it will
+            still assigned to him, after updating the product.
           </DialogContentText>
           <Controller
             name="name"
             control={control}
-            defaultValue=""
+            defaultValue={editProductsModal?.product?.name}
             render={({ field }) => (
               <TextField
                 {...field}
-                autoFocus
+                defaultValue={editProductsModal?.product?.name}
                 margin="dense"
                 id="name"
                 label="Name"
@@ -86,9 +109,11 @@ const NewProduct = () => {
           <Controller
             name="price"
             control={control}
+            defaultValue={editProductsModal?.product?.price}
             render={({ field }) => (
               <TextField
                 {...field}
+                defaultValue={editProductsModal?.product?.price}
                 margin="dense"
                 id="price"
                 label="Price"
@@ -103,10 +128,11 @@ const NewProduct = () => {
           <Controller
             name="main_image"
             control={control}
-            defaultValue=""
+            defaultValue={editProductsModal?.product?.main_image}
             render={({ field }) => (
               <TextField
                 {...field}
+                defaultValue={editProductsModal?.product?.main_image}
                 margin="dense"
                 id="main_image"
                 label="Image URL"
@@ -121,10 +147,11 @@ const NewProduct = () => {
           <Controller
             name="description"
             control={control}
-            defaultValue=""
+            defaultValue={editProductsModal?.product?.description}
             render={({ field }) => (
               <TextField
                 {...field}
+                defaultValue={editProductsModal?.product?.description}
                 margin="dense"
                 id="description"
                 label="Description"
@@ -137,11 +164,11 @@ const NewProduct = () => {
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleAddProductsModal} color="primary">
+          <Button onClick={closeEditProductsModal} color="primary">
             Cancel
           </Button>
           <Button type="submit" color="primary">
-            Add Product
+            Edit Product
           </Button>
         </DialogActions>
       </form>
@@ -149,4 +176,4 @@ const NewProduct = () => {
   );
 };
 
-export default NewProduct;
+export default EditProduct;

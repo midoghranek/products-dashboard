@@ -5,9 +5,11 @@ import { Add as AddIcon } from "@material-ui/icons";
 import { useRouter } from "next/router";
 import styled from "@emotion/styled";
 import { ProductData } from "@local/types";
-import { Products, Appbar, NewProduct } from "@local/containers";
+import { Products, Appbar, NewProduct, EditProduct } from "@local/containers";
 import { useSetRecoilState } from "recoil";
-import { newProductModalState, productListState } from "@local/atoms";
+import { newProductModalState, productListState } from "@local/states";
+import Head from "next/head";
+import { NoSSR } from "@local/common";
 
 export default function Home() {
   const router = useRouter();
@@ -34,22 +36,34 @@ export default function Home() {
 
   if (auth.currentUser)
     return (
-      <div style={{ flexGrow: 1 }}>
+      <Container>
+        <Head>
+          <title>Products Dashboard</title>
+        </Head>
         <Appbar />
         <Products />
         <FloatingButton color="primary" onClick={handleAddProductsModal}>
           <AddIcon />
         </FloatingButton>
         <NewProduct />
-      </div>
+        <EditProduct />
+      </Container>
     );
 
   return (
-    <Center>
-      <CircularProgress />
-    </Center>
+    <NoSSR>
+      <Center>
+        <CircularProgress />
+      </Center>
+    </NoSSR>
   );
 }
+
+const Container = styled.div`
+  flex-grow: 1;
+  position: relative;
+  min-height: 100vh;
+`;
 
 const Center = styled.div`
   height: 100%;
