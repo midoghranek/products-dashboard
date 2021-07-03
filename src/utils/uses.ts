@@ -12,3 +12,12 @@ export async function getDataFromFirestoreCollection(collectionName: string) {
   });
   return newProducts;
 }
+
+export function captalizeFirstLetter(string: string): string {
+  return `${string.charAt(0).toUpperCase()}${string.slice(1)}`;
+}
+
+export function firebaseAuthErrorHandler(code: string): string {
+  const fineCode = code.replace("auth/", "").replaceAll("-", " ");
+  return captalizeFirstLetter(fineCode);
+}

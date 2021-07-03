@@ -1,7 +1,7 @@
 import { MouseEventHandler, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { loginFormSchema } from "@local/utils";
+import { firebaseAuthErrorHandler, loginFormSchema } from "@local/utils";
 import { auth } from "@local/utils";
 import {
   browserLocalPersistence,
@@ -35,12 +35,6 @@ export const useLoginForm = () => {
     error: false,
   });
 
-  const errorHandler = (code: string) => {
-    if (code === "auth/user-not-found") return `User not found`;
-    if (code === "auth/wrong-password") return `Wrong password`;
-    return `Something went wrong please try again`;
-  };
-
   const onSubmit: SubmitHandler<FormInputs> = (data) => {
     setLoading(true);
     setPersistence(auth, browserLocalPersistence)
@@ -52,7 +46,10 @@ export const useLoginForm = () => {
         }
       })
       .catch((err) => {
-        setLoginError({ error: true, message: errorHandler(err.code) });
+        setLoginError({
+          error: true,
+          message: firebaseAuthErrorHandler(err.code),
+        });
         console.log({ code: err.code });
       })
       .finally(() => setLoading(false));
