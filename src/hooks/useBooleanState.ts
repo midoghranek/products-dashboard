@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { MouseEventHandler, useState } from "react";
 
-const useBooleanState = () => {
+const useBooleanState = (): [boolean, MouseEventHandler<HTMLElement>] => {
   const [state, setState] = useState<boolean>(false);
-  const toggleState = () => setState((prevState) => !prevState);
-  return [state, toggleState];
+  const toggle: MouseEventHandler<HTMLElement> = () =>
+    setState((prevState) => !prevState);
+  return [state, toggle];
 };
 
 export default useBooleanState;

@@ -9,6 +9,7 @@ import {
   signInWithEmailAndPassword,
 } from "firebase/auth";
 import { useRouter } from "next/router";
+import { useBooleanState } from "@local/hooks";
 
 type FormInputs = {
   readonly email: string;
@@ -55,11 +56,7 @@ export const useLoginForm = () => {
       .finally(() => setLoading(false));
   };
 
-  const [showPassword, setShowPassword] = useState<boolean>(false);
-
-  const handleShowPassword = () => {
-    setShowPassword((state) => !state);
-  };
+  const [showPassword, toggleShowPassword] = useBooleanState();
 
   const handleMouseDownPassword: MouseEventHandler<HTMLButtonElement> = (
     event
@@ -69,7 +66,7 @@ export const useLoginForm = () => {
 
   return {
     onSubmit,
-    handleShowPassword,
+    toggleShowPassword,
     handleMouseDownPassword,
     control,
     handleSubmit,

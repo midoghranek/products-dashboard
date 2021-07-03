@@ -29,7 +29,7 @@ const LoginForm = () => {
     onSubmit,
     handleSubmit,
     handleMouseDownPassword,
-    handleShowPassword,
+    toggleShowPassword,
     loginError,
     loading,
   } = useLoginForm();
@@ -79,7 +79,7 @@ const LoginForm = () => {
                       <InputAdornment position="end">
                         <IconButton
                           aria-label="toggle password visibility"
-                          onClick={handleShowPassword}
+                          onClick={toggleShowPassword}
                           onMouseDown={handleMouseDownPassword}
                           edge="end"
                         >
