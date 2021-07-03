@@ -9,7 +9,7 @@ import { Products, Appbar, NewProduct, EditProduct } from "@local/containers";
 import { useSetRecoilState } from "recoil";
 import { newProductModalState, productListState } from "@local/states";
 import Head from "next/head";
-import { NoSSR } from "@local/common";
+import { NoSSR } from "@local/components";
 
 export default function Home() {
   const router = useRouter();
