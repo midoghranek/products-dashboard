@@ -17,23 +17,23 @@ type FormInputs = {
 };
 
 export const useLoginForm = () => {
+  const router = useRouter();
+
+  const [showPassword, toggleShowPassword] = useBooleanState();
+  const [loading, setLoading] = useState<boolean>(false);
+  const [loginError, setLoginError] = useState<{
+    error: boolean;
+    message?: string;
+  }>({
+    error: false,
+  });
+
   const {
     control,
     handleSubmit,
     formState: { errors },
   } = useForm<FormInputs>({
     resolver: yupResolver(loginFormSchema),
-  });
-
-  const [loading, setLoading] = useState<boolean>(false);
-
-  const router = useRouter();
-
-  const [loginError, setLoginError] = useState<{
-    error: boolean;
-    message?: string;
-  }>({
-    error: false,
   });
 
   const onSubmit: SubmitHandler<FormInputs> = (data) => {
@@ -51,12 +51,9 @@ export const useLoginForm = () => {
           error: true,
           message: firebaseAuthErrorHandler(err.code),
         });
-        console.log({ code: err.code });
       })
       .finally(() => setLoading(false));
   };
-
-  const [showPassword, toggleShowPassword] = useBooleanState();
 
   const handleMouseDownPassword: MouseEventHandler<HTMLButtonElement> = (
     event
