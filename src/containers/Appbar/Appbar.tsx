@@ -1,14 +1,10 @@
 import { auth } from "@local/utils";
 import { AppBar, IconButton, Toolbar, Typography } from "@material-ui/core";
 import { ExitToApp } from "@material-ui/icons";
-import { useRouter } from "next/router";
+import { useAppbar } from "./Appbar.hook";
 
 const Appbar = () => {
-  const router = useRouter();
-  const signOut = () => {
-    auth.signOut().then(() => router.push("/login"));
-  };
-
+  const { signOut } = useAppbar();
   return (
     <AppBar position="static">
       <Toolbar>

@@ -9,21 +9,9 @@ import {
   CardActions,
 } from "@material-ui/core";
 import { Edit, Delete } from "@material-ui/icons";
-import { useSetRecoilState } from "recoil";
-import { editProductModalState } from "@local/states";
-import { ProductData } from "@local/types";
 
 const Products = () => {
-  const { products, deleteProduct } = useProducts();
-  const setEditProductModal = useSetRecoilState(editProductModalState);
-  const openEditProductModal = (product: ProductData) => {
-    setEditProductModal({
-      open: true,
-      product,
-    });
-    console.log({ product });
-  };
-
+  const { products, deleteProduct, openEditProductModal } = useProducts();
   return (
     <Cards>
       {products?.map((product) => (

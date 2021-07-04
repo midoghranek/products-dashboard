@@ -1,9 +1,4 @@
 import {
-  db,
-  getDataFromFirestoreCollection,
-  productFormSchema,
-} from "@local/utils";
-import {
   Dialog,
   DialogContentText,
   DialogActions,
@@ -12,67 +7,18 @@ import {
   TextField,
   DialogTitle,
 } from "@material-ui/core";
-import { setDoc, doc } from "firebase/firestore";
-import { useForm, SubmitHandler, Controller } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { EditProductModal, FormInputs, ProductData } from "@local/types";
-import { useRecoilState, useSetRecoilState } from "recoil";
-import { editProductModalState, productListState } from "@local/states";
-import { useDidUpdate } from "@ghranek/hooks";
+import { Controller } from "react-hook-form";
+import { useEditProduct } from "./EditProduct.hook";
 
 const EditProduct: React.FC = () => {
-  const setProducts = useSetRecoilState(productListState);
-
-  const updateProducts = () => {
-    getDataFromFirestoreCollection("products").then((data) =>
-      setProducts(data as ProductData[])
-    );
-  };
-
-  const [editProductsModal, setEditProductsModal] =
-    useRecoilState<EditProductModal>(editProductModalState);
-
   const {
-    control,
+    editProductsModal,
     handleSubmit,
-    formState: { errors },
-    setValue,
-  } = useForm<FormInputs>({
-    resolver: yupResolver(productFormSchema),
-  });
-
-  const closeEditProductsModal = () => {
-    setEditProductsModal({
-      open: false,
-      product: null,
-    });
-  };
-
-  const onSubmit: SubmitHandler<FormInputs> = (data) => {
-    setDoc(
-      doc(db, "products", (editProductsModal?.product as ProductData)?.id),
-      {
-        ...editProductsModal?.product,
-        ...data,
-      }
-    )
-      .then(() => updateProducts())
-      .then(() => closeEditProductsModal());
-  };
-
-  useDidUpdate(() => {
-    if (editProductsModal?.product) {
-      setValue("id", editProductsModal?.product?.id as string);
-      setValue("name", editProductsModal?.product?.name as string);
-      setValue("price", editProductsModal?.product?.price as number);
-      setValue("main_image", editProductsModal?.product?.main_image as string);
-      setValue(
-        "description",
-        editProductsModal?.product?.description as string
-      );
-    }
-  }, [editProductsModal?.product]);
-
+    onSubmit,
+    closeEditProductsModal,
+    control,
+    errors,
+  } = useEditProduct();
   return (
     <Dialog
       open={editProductsModal.open}

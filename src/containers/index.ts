@@ -3,3 +3,4 @@ export { default as Products } from "./Products/Products";
 export { default as Appbar } from "./Appbar/Appbar";
 export { default as NewProduct } from "./NewProduct/NewProduct";
 export { default as EditProduct } from "./EditProduct/EditProduct";
+export { default as FloatingButton } from "./FloatingButton/FloatingButton";

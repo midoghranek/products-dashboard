@@ -1,38 +1,27 @@
 import { useDidMount } from "@ghranek/hooks";
-import { auth, getDataFromFirestoreCollection } from "@local/utils";
-import { Fab, CircularProgress } from "@material-ui/core";
-import { Add as AddIcon } from "@material-ui/icons";
+import { auth } from "@local/utils";
+import { CircularProgress } from "@material-ui/core";
 import { useRouter } from "next/router";
 import styled from "@emotion/styled";
-import { ProductData } from "@local/types";
-import { Products, Appbar, NewProduct, EditProduct } from "@local/containers";
-import { useSetRecoilState } from "recoil";
-import { newProductModalState, productListState } from "@local/states";
+import {
+  Products,
+  Appbar,
+  NewProduct,
+  EditProduct,
+  FloatingButton,
+} from "@local/containers";
 import Head from "next/head";
 import { NoSSR } from "@local/components";
+import { useProductsData } from "@local/hooks";
 
 export default function Home() {
   const router = useRouter();
-  const setProducts = useSetRecoilState(productListState);
-
-  const updateProducts = () => {
-    getDataFromFirestoreCollection("products").then((data) =>
-      setProducts(data as ProductData[])
-    );
-  };
+  const { updateProducts } = useProductsData();
 
   useDidMount(() => {
     if (!auth.currentUser) router.push("/login");
-    console.log({ user: auth.currentUser });
     updateProducts();
   });
-
-  const setAddProductsModalOpen =
-    useSetRecoilState<boolean>(newProductModalState);
-
-  const handleAddProductsModal = () => {
-    setAddProductsModalOpen((state) => !state);
-  };
 
   if (auth.currentUser)
     return (
@@ -42,9 +31,7 @@ export default function Home() {
         </Head>
         <Appbar />
         <Products />
-        <FloatingButton color="primary" onClick={handleAddProductsModal}>
-          <AddIcon />
-        </FloatingButton>
+        <FloatingButton />
         <NewProduct />
         <EditProduct />
       </Container>
@@ -77,12 +64,4 @@ const Center = styled.div`
   right: 0;
   bottom: 0;
   z-index: 2;
-`;
-
-const FloatingButton = styled(Fab)`
-  && {
-    position: absolute;
-    bottom: 50px;
-    right: 50px;
-  }
 `;

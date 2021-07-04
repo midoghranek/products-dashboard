@@ -1,10 +1,4 @@
 import {
-  auth,
-  db,
-  getDataFromFirestoreCollection,
-  productFormSchema,
-} from "@local/utils";
-import {
   Dialog,
   DialogContentText,
   DialogActions,
@@ -13,45 +7,18 @@ import {
   TextField,
   DialogTitle,
 } from "@material-ui/core";
-import { collection, addDoc } from "firebase/firestore";
-import { useForm, SubmitHandler, Controller } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { FormInputs, ProductData } from "@local/types";
-import { useRecoilState, useSetRecoilState } from "recoil";
-import { newProductModalState, productListState } from "@local/states";
+import { Controller } from "react-hook-form";
+import { useNewProduct } from "./NewProduct.hook";
 
 const NewProduct = () => {
-  const setProducts = useSetRecoilState(productListState);
-
-  const updateProducts = () => {
-    getDataFromFirestoreCollection("products").then((data) =>
-      setProducts(data as ProductData[])
-    );
-  };
   const {
-    control,
+    addProductsModalOpen,
+    handleAddProductsModal,
     handleSubmit,
-    formState: { errors },
-  } = useForm<FormInputs>({
-    resolver: yupResolver(productFormSchema),
-  });
-
-  const [addProductsModalOpen, setAddProductsModalOpen] =
-    useRecoilState<boolean>(newProductModalState);
-
-  const handleAddProductsModal = () => {
-    setAddProductsModalOpen((state) => !state);
-  };
-
-  const onSubmit: SubmitHandler<FormInputs> = (data) => {
-    addDoc(collection(db, "products"), {
-      user: auth?.currentUser?.email,
-      ...data,
-    })
-      .then(() => updateProducts())
-      .then(() => handleAddProductsModal());
-  };
-
+    onSubmit,
+    errors,
+    control,
+  } = useNewProduct();
   return (
     <Dialog
       open={addProductsModalOpen}
