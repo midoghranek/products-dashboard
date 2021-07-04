@@ -1,10 +1,10 @@
 import { useDidUpdate } from "@ghranek/hooks";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useProductsData } from "@local/hooks";
+import { editProduct } from "@local/services";
 import { editProductModalState } from "@local/states";
 import { EditProductModal, FormInputs, ProductData } from "@local/types";
-import { db, productFormSchema } from "@local/utils";
-import { doc, setDoc } from "firebase/firestore";
+import { productFormSchema } from "@local/utils";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useRecoilState } from "recoil";
 
@@ -31,13 +31,7 @@ export const useEditProduct = () => {
   };
 
   const onSubmit: SubmitHandler<FormInputs> = (data) => {
-    setDoc(
-      doc(db, "products", (editProductsModal?.product as ProductData)?.id),
-      {
-        ...editProductsModal?.product,
-        ...data,
-      }
-    )
+    editProduct((editProductsModal.product as ProductData)?.id, data)
       .then(() => updateProducts())
       .then(() => closeEditProductsModal());
   };

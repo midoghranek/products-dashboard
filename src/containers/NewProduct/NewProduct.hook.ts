@@ -1,11 +1,11 @@
-import { auth, db, productFormSchema } from "@local/utils";
-import { collection, addDoc } from "firebase/firestore";
+import { productFormSchema } from "@local/utils";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { FormInputs } from "@local/types";
 import { useRecoilState } from "recoil";
 import { newProductModalState } from "@local/states";
 import { useProductsData } from "@local/hooks";
+import { addProduct } from "@local/services";
 
 export const useNewProduct = () => {
   const { updateProducts } = useProductsData();
@@ -26,10 +26,7 @@ export const useNewProduct = () => {
   };
 
   const onSubmit: SubmitHandler<FormInputs> = (data) => {
-    addDoc(collection(db, "products"), {
-      user: auth?.currentUser?.email,
-      ...data,
-    })
+    addProduct(data)
       .then(() => updateProducts())
       .then(() => handleAddProductsModal());
   };
