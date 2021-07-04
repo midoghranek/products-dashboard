@@ -5,7 +5,7 @@ import {
   doc,
   setDoc,
 } from "@firebase/firestore";
-import { FormInputs } from "@local/types";
+import { FormInputs, ProductData } from "@local/types";
 import { auth, db, getDataFromFirestoreCollection } from "@local/utils";
 
 export const addProduct = (data: FormInputs) => {
@@ -15,9 +15,14 @@ export const addProduct = (data: FormInputs) => {
   });
 };
 
-export const editProduct = (id: string, data: FormInputs) => {
+export const editProduct = (
+  id: string,
+  prevData: ProductData,
+  newData: FormInputs
+) => {
   return setDoc(doc(db, "products", id), {
-    ...data,
+    ...prevData,
+    ...newData,
   });
 };
 

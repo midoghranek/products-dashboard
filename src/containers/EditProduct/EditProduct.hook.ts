@@ -31,7 +31,11 @@ export const useEditProduct = () => {
   };
 
   const onSubmit: SubmitHandler<FormInputs> = (data) => {
-    editProduct((editProductsModal.product as ProductData)?.id, data)
+    editProduct(
+      editProductsModal.product?.id as string,
+      editProductsModal.product as ProductData,
+      data
+    )
       .then(() => updateProducts())
       .then(() => closeEditProductsModal());
   };
